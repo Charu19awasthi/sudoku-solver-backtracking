@@ -182,10 +182,25 @@
   </tbody>
   </table>
 
-  <div>
-    <button id="solve-button">⚡ Solve</button>
-    <button id="clear-button">🧹 Clear</button>
-  </div>
+<div>
+  <select id="difficulty">
+    <option value="easy">Easy</option>
+    <option value="medium">Medium</option>
+    <option value="hard">Hard</option>
+  </select>
+
+  <button id="new-game">🎮 New Game</button>
+  <button id="solve-button">⚡ Solve</button>
+  <button id="hint-button">💡 Hint</button>
+  <button id="clear-button">🧹 Clear</button>
+</div>
+
+<h3 id="timer">Time: 0s</h3>
+
+<div id="leaderboard">
+  <h3>Leaderboard</h3>
+  <ul id="scores"></ul>
+</div>
 
   <div id="message"></div>
 
@@ -265,6 +280,11 @@
   }
 
 </script>
+<script src="js/solver.js"></script>
+<script src="js/generator.js"></script>
+<script src="js/hint.js"></script>
+<script src="js/leaderboard.js"></script>
+<script src="js/sound.js"></script>
 
 </body>
 </html>

@@ -11,6 +11,7 @@ var SudokuSolver = function (testable) {
   var solver;
 
   // PUBLIC FUNCTIONS
+  
   function solve(boardString) {
     var boardArray = boardString.split("");
     if (boardIsInvalid(boardArray)) {
@@ -169,3 +170,135 @@ var SudokuSolver = function (testable) {
 
   return solver;
 }(TESTABLE);
+
+function getBoardString() {
+  let tds = document.getElementsByTagName("td");
+  let str = "";
+  for (let i = 0; i < 81; i++) {
+    let val = tds[i].innerText;
+    str += val ? val : "-";
+  }
+  return str;
+}
+
+// Load string into UI
+function loadBoardString(boardString) {
+  let tds = document.getElementsByTagName("td");
+  for (let i = 0; i < 81; i++) {
+    tds[i].innerText = boardString[i] === "-" ? "" : boardString[i];
+  }
+}
+
+// 🎮 Generate puzzle based on difficulty
+function generatePuzzle() {
+  let difficulty = document.getElementById("difficulty").value;
+  let puzzle = EASY_PUZZLE;
+
+  if (difficulty === "medium") puzzle = MEDIUM_PUZZLE;
+  if (difficulty === "hard") puzzle = HARD_PUZZLE;
+
+  loadBoardString(puzzle);
+  resetTimer();
+}
+
+// 💡 Hint system (fills ONE cell)
+function getHint() {
+  let current = getBoardString();
+  let solved = SudokuSolver.solve(current);
+
+  if (!solved) {
+    alert("Invalid board!");
+    return;
+  }
+
+  for (let i = 0; i < 81; i++) {
+    if (current[i] === "-") {
+      let tds = document.getElementsByTagName("td");
+      tds[i].innerText = solved[i];
+      break;
+    }
+  }
+}
+
+// 🔊 Sound
+function playClick() {
+  let audio = new Audio("click.mp3"); // add file later
+  audio.play();
+}
+
+// ⏱️ Timer
+let time = 0;
+let timerInterval;
+
+function startTimer() {
+  clearInterval(timerInterval);
+  time = 0;
+  timerInterval = setInterval(() => {
+    time++;
+    document.getElementById("timer").innerText = "Time: " + time + "s";
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  time = 0;
+  document.getElementById("timer").innerText = "Time: 0s";
+  startTimer();
+}
+
+// 🏆 Leaderboard (localStorage)
+function saveScore() {
+  let scores = JSON.parse(localStorage.getItem("sudokuScores")) || [];
+  scores.push(time);
+  scores.sort((a, b) => a - b);
+  localStorage.setItem("sudokuScores", JSON.stringify(scores.slice(0, 5)));
+  loadScores();
+}
+
+function loadScores() {
+  let scores = JSON.parse(localStorage.getItem("sudokuScores")) || [];
+  let list = document.getElementById("scores");
+  if (!list) return;
+
+  list.innerHTML = "";
+  scores.forEach(s => {
+    let li = document.createElement("li");
+    li.innerText = s + "s";
+    list.appendChild(li);
+  });
+}
+
+// ================= BUTTON CONNECTIONS =================
+
+// Solve button (extend your existing one)
+document.getElementById("solve-button").addEventListener("click", function () {
+  playClick();
+
+  let boardString = getBoardString();
+  let solved = SudokuSolver.solve(boardString);
+
+  if (solved) {
+    loadBoardString(solved);
+    saveScore();
+  } else {
+    alert("Invalid puzzle!");
+  }
+});
+
+// New Game
+document.getElementById("new-game").addEventListener("click", function () {
+  playClick();
+  generatePuzzle();
+});
+
+// Hint button
+document.getElementById("hint-button").addEventListener("click", function () {
+  playClick();
+  getHint();
+});
+
+// Start everything
+window.onload = function () {
+  loadScores();
+  startTimer();
+};
