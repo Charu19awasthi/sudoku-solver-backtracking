@@ -4,13 +4,12 @@ var EASY_PUZZLE = "1-58-2----9--764-52--4--819-19--73-6762-83-9-----61-5---76---
 var MEDIUM_PUZZLE = "-3-5--8-45-42---1---8--9---79-8-61-3-----54---5------78-----7-2---7-46--61-3--5--";
 var HARD_PUZZLE = "8----------36------7--9-2---5---7-------457-----1---3---1----68--85---1--9----4--";
 
-// Set this variable to true to publicly expose otherwise private functions inside of SudokuSolver
 var TESTABLE = true;
 
 var SudokuSolver = function (testable) {
   var solver;
 
-  // PUBLIC FUNCTIONS
+  
   
   function solve(boardString) {
     var boardArray = boardString.split("");
@@ -201,7 +200,7 @@ function generatePuzzle() {
   resetTimer();
 }
 
-// 💡 Hint system (fills ONE cell)
+
 function getHint() {
   let current = getBoardString();
   let solved = SudokuSolver.solve(current);
@@ -220,13 +219,13 @@ function getHint() {
   }
 }
 
-// 🔊 Sound
+
 function playClick() {
   let audio = new Audio("click.mp3"); // add file later
   audio.play();
 }
 
-// ⏱️ Timer
+
 let time = 0;
 let timerInterval;
 
@@ -246,7 +245,7 @@ function resetTimer() {
   startTimer();
 }
 
-// 🏆 Leaderboard (localStorage)
+
 function saveScore() {
   let scores = JSON.parse(localStorage.getItem("sudokuScores")) || [];
   scores.push(time);
@@ -268,9 +267,6 @@ function loadScores() {
   });
 }
 
-// ================= BUTTON CONNECTIONS =================
-
-// Solve button (extend your existing one)
 document.getElementById("solve-button").addEventListener("click", function () {
   playClick();
 
@@ -285,19 +281,19 @@ document.getElementById("solve-button").addEventListener("click", function () {
   }
 });
 
-// New Game
+
 document.getElementById("new-game").addEventListener("click", function () {
   playClick();
   generatePuzzle();
 });
 
-// Hint button
+
 document.getElementById("hint-button").addEventListener("click", function () {
   playClick();
   getHint();
 });
 
-// Start everything
+
 window.onload = function () {
   loadScores();
   startTimer();
